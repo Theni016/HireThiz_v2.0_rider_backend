@@ -15,6 +15,8 @@ router.post("/createTrip", async (req, res) => {
       description,
     } = req.body;
 
+    console.log("Received trip data:", req.body);
+
     // Validate driver
     const driverExists = await DriverCreds.findById(driver);
     if (!driverExists) {
@@ -38,6 +40,7 @@ router.post("/createTrip", async (req, res) => {
       .status(201)
       .json({ message: "Trip created successfully", trip: newTrip });
   } catch (error) {
+    console.error("Error creating trip:", error);
     res
       .status(500)
       .json({ message: "Error creating trip", error: error.message });
