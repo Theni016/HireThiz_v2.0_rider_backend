@@ -59,4 +59,15 @@ router.get("/trips/driver/:driverId", async (req, res) => {
   }
 });
 
+router.put("/trips/:id/status", async (req, res) => {
+  try {
+    const tripId = req.params.id;
+    const { status } = req.body;
+    await Trip.findByIdAndUpdate(tripId, { status });
+    res.status(200).json({ message: "Status updated" });
+  } catch (err) {
+    res.status(500).json({ error: "Something went wrong" });
+  }
+});
+
 module.exports = router;

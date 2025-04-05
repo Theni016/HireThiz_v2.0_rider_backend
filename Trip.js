@@ -24,6 +24,11 @@ const TripSchema = new mongoose.Schema({
   pricePerSeat: { type: Number, required: true },
   date: { type: Date, required: true },
   description: { type: String },
+  status: {
+    type: String,
+    enum: ["Available", "On Progress", "Completed", "Cancelled"],
+    default: "Available",
+  },
 });
 
 module.exports = mongoose.model("Trip", TripSchema);
