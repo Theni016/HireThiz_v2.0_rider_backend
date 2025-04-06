@@ -9,7 +9,23 @@ const TripSchema = new mongoose.Schema({
   },
   driverName: { type: String, required: true },
   vehicle: { type: String, required: true },
-  passengers: [{ type: mongoose.Schema.Types.ObjectId, ref: "PassengerCreds" }],
+
+  bookings: [
+    {
+      passengerId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "PassengerCreds",
+      },
+      name: String,
+      phone: String,
+      seatsBooked: Number,
+      payment: {
+        type: String,
+        enum: ["Pending", "Completed"],
+        default: "Pending",
+      },
+    },
+  ],
   startLocation: {
     latitude: Number,
     longitude: Number,
@@ -26,7 +42,7 @@ const TripSchema = new mongoose.Schema({
   description: { type: String },
   status: {
     type: String,
-    enum: ["Available", "On Progress", "Completed", "Cancelled"],
+    enum: ["Available", "In Progress", "Completed", "Cancelled"],
     default: "Available",
   },
 });

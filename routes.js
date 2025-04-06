@@ -70,4 +70,62 @@ router.put("/trips/:id/status", async (req, res) => {
   }
 });
 
+router.get("/trips/:tripId/bookings", async (req, res) => {
+  try {
+    const { tripId } = req.params;
+    const trip = await Trip.findById(tripId);
+
+    if (!trip) {
+      return res.status(404).json({ message: "Trip not found" });
+    }
+
+    const bookings = trip.bookings || [];
+    res.status(200).json({ passengers: bookings });
+  } catch (err) {
+    console.error(err);
+    res
+      .status(500)
+      .json({ message: "Failed to fetch bookings", error: err.message });
+  }
+});
+
+router.put(
+  "/trips/:tripId/bookings/:passengerIndex/payment",
+  async (req, res) => {
+    try {
+      const { tripId, passengerIndex } = req.params;
+
+      const trip = await Trip.findById(tripId);
+      if (!trip) return res.status(404).json({ message: "Trip not found" });
+
+      if (!trip.bookings[passengerIndex]) {
+        return res.status(404).json({ message: "Booking not found" });
+      }
+
+      trip.bookings[passengerIndex].payment = "Completed";
+      await trip.save();
+
+      res.status(200).json({ message: "Payment confirmed" });
+    } catch (err) {
+      console.error(err);
+      res
+        .status(500)
+        .json({ message: "Failed to confirm payment", error: err.message });
+    }
+  }
+);
+
+router.get("/trips/:tripId", async (req, res) => {
+  try {
+    const trip = await Trip.findById(req.params.tripId);
+    if (!trip) return res.status(404).json({ message: "Trip not found" });
+
+    res.status(200).json(trip);
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Error fetching trip", error: err.message });
+  }
+});
+
 module.exports = router;
